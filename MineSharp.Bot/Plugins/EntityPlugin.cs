@@ -204,7 +204,7 @@ public class EntityPlugin : Plugin
             return Task.CompletedTask;
         }
 
-        (entity.Position as MutableVector3)!.Set(
+        (entity.Position as MutableVector3)!.Add(
             NetUtils.ConvertDeltaPosition(packet.DeltaX),
             NetUtils.ConvertDeltaPosition(packet.DeltaY),
             NetUtils.ConvertDeltaPosition(packet.DeltaZ)
