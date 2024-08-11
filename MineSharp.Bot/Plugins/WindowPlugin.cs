@@ -148,10 +148,19 @@ public class WindowPlugin : Plugin
         _ = Bot.Client.SendPacket(packet);
         _ = playerPlugin?.SwingArm();
 
-        var result = await openContainerTsc.Task;
+        var timeoutTask = Task.Delay(timeoutMs);
+        var resultTask = openContainerTsc.Task; // << this hangs
+
+        var completedTask = await Task.WhenAny(resultTask, timeoutTask);
+
+        if (completedTask == timeoutTask)
+        {
+            openContainerTsc = null;
+            throw new TimeoutException("Opening container timed out.");
+        }
 
         openContainerTsc = null;
-        return result;
+        return await resultTask;
     }
 
     /// <summary>
@@ -450,7 +459,10 @@ public class WindowPlugin : Plugin
 
         windowInfo = windowInfo with { Title = packet.WindowTitle };
         Logger.Debug($"Received Open Window Packet id={packet.WindowId}");
-        OpenWindow(packet.WindowId, windowInfo);
+        Task.Delay(100).ContinueWith(t =>
+        {
+            OpenWindow(packet.WindowId, windowInfo);
+        });
 
         return Task.CompletedTask;
     }
