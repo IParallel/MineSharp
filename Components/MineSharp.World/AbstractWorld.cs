@@ -222,37 +222,6 @@ public abstract class AbstractWorld(MinecraftData data) : IWorld
         }
     }
 
-    /// <inheritdoc />
-    public IEnumerable<Block> FindBlocks(IEnumerable<BlockType> blockTypes, int? maxCount = null)
-    {
-        var found = 0;
-        foreach (var chunk in Chunks.Values)
-        {
-            foreach (var blockType in blockTypes)
-            {
-                var remainingCount = maxCount.HasValue ? maxCount.Value - found : int.MaxValue;
-
-                if (remainingCount <= 0)
-                {
-                    yield break;
-                }
-
-                foreach (var block in chunk.FindBlocks(blockType, remainingCount))
-                {
-                    block.Position = ToWorldPosition(chunk.Coordinates, block.Position);
-                    yield return block;
-
-                    found++;
-
-                    if (maxCount.HasValue && found >= maxCount.Value)
-                    {
-                        yield break;
-                    }
-                }
-            }
-        }
-    }
-
     /// <summary>
     ///     Mutate <paramref name="position" /> to a world position
     /// </summary>
