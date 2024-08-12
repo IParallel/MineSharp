@@ -272,8 +272,7 @@ public class WindowPlugin : Plugin
     }
 
     /// <summary>
-    ///     Move from specific slot <paramref name="from" />, to <paramref name="to"/>
-    ///     in the specified equipment slot.
+    ///     Move from specific slot <paramref name="from" />, to the specified slot index <paramref name="to"/>
     /// </summary>
     /// <param name="from"></param>
     /// <param name="to"></param>
@@ -302,7 +301,7 @@ public class WindowPlugin : Plugin
 
         if (!wasEmpty)
         {
-            Inventory.DoSimpleClick(WindowMouseButton.MouseLeft, from.SlotIndex);
+            Inventory!.DoSimpleClick(WindowMouseButton.MouseLeft, from.SlotIndex);
         }
     }
 
