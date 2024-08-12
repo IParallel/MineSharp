@@ -271,6 +271,41 @@ public class WindowPlugin : Plugin
         _EquipItem(type, slot);
     }
 
+    /// <summary>
+    ///     Move from specific slot <paramref name="from" />, to <paramref name="to"/>
+    ///     in the specified equipment slot.
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task MoveToSlot(Slot from, short to)
+    {
+        if (to == (short)Inventory.Slot.CraftingResult)
+        {
+            throw new InvalidOperationException("cannot put something in CraftingResult slot");
+        }
+
+        await WaitForInventory();
+
+        var slot = Inventory!.GetSlot(to);
+
+        _MoveToSlot(from, slot);
+    }
+
+
+    private void _MoveToSlot(Slot from, Slot to)
+    {
+        var wasEmpty = to.IsEmpty();
+
+        Inventory!.DoSimpleClick(WindowMouseButton.MouseLeft, from.SlotIndex);
+        Inventory!.DoSimpleClick(WindowMouseButton.MouseLeft, to.SlotIndex);
+
+        if (!wasEmpty)
+        {
+            Inventory.DoSimpleClick(WindowMouseButton.MouseLeft, from.SlotIndex);
+        }
+    }
+
     private void _EquipItem(ItemType type, Slot destination)
     {
         if (destination.Item?.Info.Type == type)
@@ -285,15 +320,7 @@ public class WindowPlugin : Plugin
             throw new ItemNotFoundException(type);
         }
 
-        var wasEmpty = destination.IsEmpty();
-
-        Inventory!.DoSimpleClick(WindowMouseButton.MouseLeft, slot.SlotIndex);
-        Inventory!.DoSimpleClick(WindowMouseButton.MouseLeft, destination.SlotIndex);
-
-        if (!wasEmpty)
-        {
-            Inventory.DoSimpleClick(WindowMouseButton.MouseLeft, slot.SlotIndex);
-        }
+        _MoveToSlot(slot, destination);
     }
 
     private void CreateInventory()
