@@ -172,6 +172,14 @@ public interface IWorld
     public IEnumerable<Block> FindBlocks(BlockType type, IWorldIterator iterator, int? maxCount = null);
 
     /// <summary>
+    ///     Query the world for blocks type.
+    /// </summary>
+    /// <param name="blockTypes"></param>
+    /// <param name="maxCount"></param>
+    /// <returns></returns>
+    public IEnumerable<Block> FindBlocks(IEnumerable<BlockType> blockTypes, int? maxCount = null);
+
+    /// <summary>
     ///     Find a block of type <paramref name="type" />
     /// </summary>
     /// <param name="type"></param>
